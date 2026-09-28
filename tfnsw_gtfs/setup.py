@@ -11,6 +11,9 @@ db_file = "gtfs.db"
 
 
 try:
+  if os.path.isfile(db_file):
+    os.remove(db_file)
+  
   print("Downloading the ZIP folder from TfNSW's site")
   urllib.request.urlretrieve(zip_folder_url, local_zip_folder_name)
 
@@ -24,24 +27,30 @@ try:
 
   conn = sqlite3.connect(db_file)
 
+  print("Filtering routes.txt")
   routes = pd.read_csv("routes.txt")
   routes = routes[routes["route_type"] == 2] # Filter to trains only
 
+  print("Filtering trips.txt")
   trips = pd.read_csv("trips.txt")
   trips = trips[trips["route_id"].isin(routes["route_id"])] # Train trips only
   trip_ids = set(trips["trip_id"])
 
+  print("Filtering calendar.txt")
   calendar = pd.read_csv("calendar.txt")
   calendar = calendar[calendar["service_id"].isin(trips["service_id"])]
 
+  print("Creating tables for routes, trips, calendar")
   routes.to_sql("routes", conn, if_exists="replace", index=False)
   trips.to_sql("trips", conn, if_exists="replace", index=False)
   calendar.to_sql("calendar", conn, if_exists="replace", index=False)
 
+  print("Creating tables for agencies, stops")
   for name in ["agency", "stops"]:
     df = pd.read_csv(f"{name}.txt")
     df.to_sql(name, conn, if_exists="replace", index=False)
 
+  print("Creating tables for stop times")
   for chunk in pd.read_csv("stop_times.txt", chunksize=50000):
     chunk[chunk["trip_id"].isin(trip_ids)].to_sql("stop_times", conn, if_exists="append", index=False)
 
