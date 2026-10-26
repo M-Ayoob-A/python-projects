@@ -1,0 +1,16 @@
+{
+  "name": "Sovereign AI Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "secrets": {
+    "THAURA_API_KEY": {
+      "description": "Thaura AI API key (create one under API > API Keys on thaura.ai)",
+      "documentationUrl": "https://thaura.ai/api-platform"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/setup-agent.sh"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "thaura/thaura",
+  "provider": {
+    "thaura": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Thaura AI",
+      "options": {
+        "baseURL": "https://backend.thaura.ai/v1",
+        "apiKey": "{env:THAURA_API_KEY}",
+        "setCacheKey": true
+      },
+      "models": {
+        "thaura": {
+          "name": "Thaura AI",
+          "limit": { "context": 131072, "output": 32000 }
+        }
+      }
+    }
+  }
+}
